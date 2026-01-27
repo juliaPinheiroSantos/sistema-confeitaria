@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: confeitaria-postgres
+    environment:
+      POSTGRES_DB: confeitaria
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "0.0.0.0:5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD=12345 psql -U admin -d confeitaria -c 'SELECT 1' > /dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: confeitaria-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=confeitaria
+      - DB_USER=admin
+      - DB_PASSWORD=12345
+
+volumes:
+  postgres_data:
