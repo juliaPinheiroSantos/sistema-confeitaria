@@ -75,7 +75,7 @@ public class Address {
 	public String toString() {
 		return "Address [getInteger()=" + getInteger() + ", getCep()=" + getCep() + ", getStreet()=" + getStreet()
 				+ ", getNumber()=" + getNumber() + ", getComplement()=" + getComplement() + ", getReference()="
-				+ getReference() + ", getArea()=" + getArea() + "]";
+				+ getReference() + ", getIdArea()=" + getArea() + "]";
 	}
 	
 
