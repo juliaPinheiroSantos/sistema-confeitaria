@@ -22,6 +22,7 @@ public class RepositoryFlavor {
         flavor.setId(rs.getInt("id"));
         flavor.setName(rs.getString("name"));
         
+        //mantém a lista, mas como é por id o filtro, só vai retornar um flavor, então vamos pegar a primeira opção
         String levelStr = rs.getString("flavor_level");
         if (levelStr != null) {
             flavor.setLevel(FlavorLevel.valueOf(levelStr));
