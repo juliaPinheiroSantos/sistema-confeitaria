@@ -12,8 +12,9 @@ public class Main {
             CreateTables.createTableUser();
 
             char[] password = "julia123".toCharArray();
-            User user = new User("julia", password);
-
+            User user = new User("Julia", "Pinheiro", "susulaju123@gmail.com", "julia", password);
+            
+            
             RepositoryUser repositoryUser = new RepositoryUser();
             boolean userCreated = repositoryUser.createUser(user);
             

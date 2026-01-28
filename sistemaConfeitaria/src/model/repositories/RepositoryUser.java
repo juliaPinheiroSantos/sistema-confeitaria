@@ -10,18 +10,22 @@ import model.entities.User;
 
 public class RepositoryUser {
 
-	private static final String insertSQL = "INSERT INTO users(login,password_hash) VALUES (?,?) "
-			+ "ON CONFLICT (login) DO NOTHING";
+	private static final String insertSQL = "INSERT INTO users(firstName, lastName, email, login, password_hash) VALUES (?,?) "
+			+ "ON CONFLICT (email) DO NOTHING";
 
 	
-	public boolean createUser(User user) {
+	public boolean createUser(User user) throws SQLException {
 		try (Connection conn = DBConnection.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(insertSQL)) { 
 			
-			stmt.setString(1, user.getLogin());
-			stmt.setString(2, user.getPasswordHash());
+			stmt.setString(1, user.getFirstName());
+			stmt.setString(2, user.getLastName());
+			stmt.setString(3, user.getEmail());
+			stmt.setString(4, user.getLogin());
+			stmt.setString(5, user.getPasswordHash());
 			
 			int rowsAffected = stmt.executeUpdate();
+			
 			return rowsAffected > 0;
 			
 		} catch (SQLException e) {
