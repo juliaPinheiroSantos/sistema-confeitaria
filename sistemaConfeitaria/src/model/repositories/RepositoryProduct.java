@@ -20,6 +20,7 @@ public class RepositoryProduct {
 	private static final String findByFlavorLevel = "SELECT p.* FROM product p " +
 	"JOIN flavor f ON p.flavor_id = f.id " +
 			"WHERE f.level = ?";
+	private static final String findByFlavor = "SELECT * FROM products WHERE flavor_id = ?";
 	
 	//isso aqui é pra pegar o id do flavor e achar o level dele
 	private RepositoryFlavor repositoryFlavor;
@@ -70,6 +71,10 @@ public class RepositoryProduct {
 	
 	public List<Product> findByFlavorLevel(FlavorLevel level){
 		return findByFilter(findByFlavorLevel, level.name());
+	}
+	
+	public List<Product> findByFlavor(Flavor flavor){
+		return findByFilter(findByFlavor, String.valueOf(flavor.getId()));
 	}
 	
 }
