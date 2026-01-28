@@ -7,7 +7,7 @@ public class Area {
 	
 	public Area() {}
 	
-	public Area(Integer id, String name, double fee) {
+	public Area(String name, double fee) {
 		setName(name);
 		setFee(fee);
 	}

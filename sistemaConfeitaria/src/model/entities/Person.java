@@ -6,8 +6,16 @@ public class Person {
 	private String firstName;
 	private String lastName;
 	private String email;
+	private Address address;
 	
 	public Person() {}
+	
+	public Person(String firstName, String lastName, String email, Address address) {
+		setFirstName(firstName);
+		setLastName(lastName);
+		setEmail(email);
+		setAddress(address);
+	}
 	
 	public Person(String firstName, String lastName, String email) {
 		setFirstName(firstName);
@@ -45,11 +53,19 @@ public class Person {
 	}
 	
 
+	public Address getAddress() {
+		return address;
+	}
 
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "Person [getId()=" + getId() + ", getFirstName()=" + getFirstName() + ", getLastName()=" + getLastName()
-				+ ", getEmail()=" + getEmail();
+				+ ", getEmail()=" + getEmail() + ", getAddress()=" + getAddress() + "]";
 	}
 	
 	

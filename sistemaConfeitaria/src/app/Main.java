@@ -12,7 +12,7 @@ public class Main {
             CreateTables.createTableUser();
 
             char[] password = "julia123".toCharArray();
-            User user = new User("Julia", "Pinheiro", "susulaju123@gmail.com", "julia", password);
+            User user = new User(1, "Julia", "Pinheiro", "susulaju123@gmail.com", password);
             
             
             RepositoryUser repositoryUser = new RepositoryUser();
