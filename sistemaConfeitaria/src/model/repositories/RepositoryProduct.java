@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.entities.DbException;
+import model.entities.Flavor;
 import model.entities.FlavorLevel;
 import model.entities.Product;
 
@@ -20,16 +21,25 @@ public class RepositoryProduct {
 	"JOIN flavor f ON p.flavor_id = f.id " +
 			"WHERE f.level = ?";
 	
-	
+	//isso aqui é pra pegar o id do flavor e achar o level dele
+	private RepositoryFlavor repositoryFlavor;
+    public RepositoryProduct(RepositoryFlavor repositoryFlavor) {
+        this.repositoryFlavor = repositoryFlavor;
+    }
 	
 	private Product mapResultSetToProduct(ResultSet rs) throws SQLException {
 		Product p = new Product();
-	    p.setId(rs.getInt("id"));
-	    p.setName(rs.getString("name"));
+        p.setId(rs.getInt("id"));
+        p.setName(rs.getString("name"));
+        p.setPrice(rs.getDouble("price"));
+        p.setSize(Size.valueOf(rs.getString("size")));
 	    
-	    int flavorId = rs.getInt("flavor_id");
-	    p.setFlavor(RepositoryFlavor.findById(flavorId)); 
-	    p.setSize(Size.valueOf(rs.getString("size")));
+        int flavorId = rs.getInt("flavor_id");
+        List<Flavor> list = repositoryFlavor.findById(flavorId);
+
+        if (!list.isEmpty()) {
+            p.setFlavor(list.get(0));
+        }
 	    
 	    return p;
     }

@@ -29,6 +29,25 @@ public class RepositoryFlavor {
         return flavor;
     }
 	
+	private List<Flavor> findByFilter(String sql, Integer filterValue) {
+        List<Flavor> list = new ArrayList<>();
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+        	pstmt.setInt(1, filterValue);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapResultSetToFlavor(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+	
 	private List<Flavor> findByFilter(String sql, String filterValue) {
         List<Flavor> list = new ArrayList<>();
         
@@ -53,6 +72,6 @@ public class RepositoryFlavor {
     }
 	
 	public List<Flavor> findById(Integer id) {
-        return findByFilter(findById, Integer.toString(id));
+        return findByFilter(findById, id);
     }
 }
