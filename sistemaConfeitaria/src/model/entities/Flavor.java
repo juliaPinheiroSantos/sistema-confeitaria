@@ -4,15 +4,13 @@ public class Flavor {
 	private Integer id;
 	private String name;
 	private String description;
-	private FlavorLevel level;
 	
 	
 	public Flavor() {}
 	
-	public Flavor(String name, String description, FlavorLevel level) {
+	public Flavor(String name, String description) {
 		setName(name);
 		setDescription(description);
-		setLevel(level);
 	}
 
 	public Integer getId() {
@@ -38,14 +36,6 @@ public class Flavor {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public FlavorLevel getLevel() {
-		return this.level;
-	}
-
-	public void setLevel(FlavorLevel level) {
-		this.level = level;
 	}
 
 	@Override

@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import model.entities.DbException;
 import model.entities.Flavor;
 import model.entities.FlavorLevel;
 import model.entities.Product;
@@ -17,16 +15,8 @@ import model.entities.Product;
 public class RepositoryProduct {
 	private static final String insertProduct = "";
 	private static final String findBySize = "SELECT * FROM product WHERE size = ?";
-	private static final String findByFlavorLevel = "SELECT p.* FROM product p " +
-	"JOIN flavor f ON p.flavor_id = f.id " +
-			"WHERE f.level = ?";
-	private static final String findByFlavor = "SELECT * FROM products WHERE flavor_id = ?";
-	
-	//isso aqui é pra pegar o id do flavor e achar o level dele
-	private RepositoryFlavor repositoryFlavor;
-    public RepositoryProduct(RepositoryFlavor repositoryFlavor) {
-        this.repositoryFlavor = repositoryFlavor;
-    }
+	private static final String findByFlavor = "SELECT * FROM product WHERE flavor = ?";
+	private static final String findByFlavorLevel = "SELECT * FROM products WHERE flavor_level = ?";
 	
 	private Product mapResultSetToProduct(ResultSet rs) throws SQLException {
 		Product p = new Product();
@@ -34,13 +24,7 @@ public class RepositoryProduct {
         p.setName(rs.getString("name"));
         p.setPrice(rs.getDouble("price"));
         p.setSize(Size.valueOf(rs.getString("size")));
-	    
-        //mantém a lista, mas como é por id o filtro, só vai retornar um flavor, então vamos pegar a primeira opção
-        int flavorId = rs.getInt("flavor_id");
-        List<Flavor> list = repositoryFlavor.findById(flavorId);
-        if (!list.isEmpty()) {
-            p.setFlavor(list.get(0));
-        }
+				p.setLevel(FlavorLevel.valueOf(rs.getString("flavorLevel")));
 	    
 	    return p;
     }

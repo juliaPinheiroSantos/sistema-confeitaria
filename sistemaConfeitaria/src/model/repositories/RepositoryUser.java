@@ -10,7 +10,7 @@ import model.entities.User;
 
 public class RepositoryUser {
 
-	private static final String insertUser = "INSERT INTO user(firstName, lastName, email,  password_hash) VALUES (?,?) "
+	private static final String insertUser = "INSERT INTO user(firstName, lastName, email, password_hash) VALUES (?,?) "
 			+ "ON CONFLICT (email) DO NOTHING";
 
 	
