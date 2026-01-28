@@ -34,9 +34,9 @@ public class RepositoryProduct {
         p.setPrice(rs.getDouble("price"));
         p.setSize(Size.valueOf(rs.getString("size")));
 	    
+        //mantém a lista, mas como é por id o filtro, só vai retornar um flavor, então vamos pegar a primeira opção
         int flavorId = rs.getInt("flavor_id");
         List<Flavor> list = repositoryFlavor.findById(flavorId);
-
         if (!list.isEmpty()) {
             p.setFlavor(list.get(0));
         }
