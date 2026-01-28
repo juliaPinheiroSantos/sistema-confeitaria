@@ -12,7 +12,8 @@ public class CreateTables {
 				+ "first_name VARCHAR(30) NOT NULL,"
 				+ "last_name VARCHAR(30),"
 				+ "email TEXT NOT NULL UNIQUE,"
-				+ "address TEXT NOT NULL,"
+				+ "id_address TEXT NOT NULL,"
+				+ "CONSTRAINT fk_address FOREIGN KEY (id_address) REFERENCES address(id) ON DELETE CASCADE"
 				+ ");";
 		
 		try(Connection conn = DBConnection.getConnection())
@@ -116,7 +117,7 @@ public class CreateTables {
 				+ "datetime DATETIME NOT NULL,"
 				+ "total_price DECIMAL(10, 2) NOT NULL,"
 				+ "delivery ENUM NOT NULL,"
-				+ "observations TEXT"
+				+ "observations TEXT,"
 				+ "CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES user(id) ON DELETE CASCADE"
 				+ ");";
 		
@@ -142,7 +143,7 @@ public class CreateTables {
 				+ " product (id SERIAL PRIMARY KEY,"
 				+ "name VARCHAR(20) NOT NULL,"
 				+ "flavor TEXT NOT NULL,"
-				+ "flavor_level ENUM"
+				+ "flavor_level ENUM,"
 				+ "size ENUM,"
 				+ "price DECIMAL(10,2) NOT NULL,"
 				+ "description TEXT"

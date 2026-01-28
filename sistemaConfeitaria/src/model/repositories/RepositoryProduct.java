@@ -12,7 +12,5 @@ import model.entities.FlavorLevel;
 import model.entities.Product;
 
 public class RepositoryProduct {
-
-	
 	
 }

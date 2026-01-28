@@ -1,7 +1,7 @@
 package model.entities;
 
 public class AddressException extends Exception {
-	public AddressException() {
-		super.getMessage();
+	public AddressException(String msg) {
+		super(msg);
 	}
 }
