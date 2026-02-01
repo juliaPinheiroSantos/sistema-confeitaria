@@ -145,10 +145,10 @@ public class RepositoryUser {
 
 	/**
 	 *  Mapeia a linha atual do ResultSet para um objeto User.
-	 *  Não avança o cursor; espera-se que o chamador tenha posiciondo next().
+	 *  Não avança o cursor; espera-se que o chamador tenha posicionado next().
 	 * 
 	 * @param rs ResultSet posicionado na linha desejada
-	 * @return instância de User preenchida coom os dados da linha
+	 * @return instância de User preenchida com os dados da linha
 	 * @throws SQLException em erro ao ler colunas
 	 */
 	private User mapResultSetToUser(ResultSet rs) throws SQLException{

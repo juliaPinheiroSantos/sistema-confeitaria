@@ -25,7 +25,7 @@ public class CreateTables {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Create person sucessfull");
+			System.out.println("Create person successful");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -51,7 +51,7 @@ public class CreateTables {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Create user succesfull");
+			System.out.println("Create user successful");
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -74,7 +74,7 @@ public class CreateTables {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Create area sucessfull");
+			System.out.println("Create area successful");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -102,7 +102,7 @@ public class CreateTables {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Create address sucessfull");
+			System.out.println("Create address successful");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -130,7 +130,7 @@ public class CreateTables {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Create order sucessfull");
+			System.out.println("Create order successful");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -156,7 +156,7 @@ public class CreateTables {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Create product sucessfull");
+			System.out.println("Create product successful");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -171,7 +171,7 @@ public class CreateTables {
 				+ "quantity INTEGER NOT NULL,"
 				+ "price_at_moment DECIMAL(10, 2) NOT NULL,"
 				+ "CONSTRAINT fk_order FOREIGN KEY (id_order) REFERENCES order(id) ON DELETE CASCADE,"
-				+ "CONSTRAINT fk_product FOREIGN KEU (id_product) REFERENCES producr(id)"
+				+ "CONSTRAINT fk_product FOREIGN KEY (id_product) REFERENCES product(id)"
 				+ ");";
 	
 		try(Connection conn = DBConnection.getConnection()){
@@ -182,7 +182,7 @@ public class CreateTables {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Create order_items sucessfull");
+			System.out.println("Create order_items successful");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -192,7 +192,7 @@ public class CreateTables {
 
 
 	public static void createTableFlavor(){
-		String createTableFlavor = "CREATE IF NOT EXISTS"
+		String createTableFlavor = "CREATE TABLE IF NOT EXISTS"
 			+ " flavor (id SERIAL PRIMARY KEY,"
 			+ "name TEXT NOT NULL,"
 			+ "level ENUM,"
@@ -208,7 +208,7 @@ public class CreateTables {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Create flavor sucessfull");
+			System.out.println("Create flavor successful");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
