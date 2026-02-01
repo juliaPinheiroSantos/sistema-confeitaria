@@ -35,7 +35,6 @@ public class CreateTables {
 		String createTableUser = "CREATE TABLE IF NOT EXISTS"
 				+ " user (id SERIAL PRIMARY KEY,"
 				+ "id_person INTEGER NOT NULL UNIQUE,"
-				+ "login VARCHAR(50) NOT NULL UNIQUE,"
 				+ "password_hash TEXT NOT NULL,"
 				+ "CONSTRAINT fk_person FOREIGN KEY (id_person) REFERENCES person(id) ON DELETE CASCADE"
 				+ ");";
