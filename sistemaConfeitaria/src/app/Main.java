@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            CreateTables.createTableUser();
+            CreateTables.createAllTables();
             System.out.println("Tabelas criadas com sucesso!");
         } catch (Exception e) {
             System.err.println("Erro: " + e.getMessage());

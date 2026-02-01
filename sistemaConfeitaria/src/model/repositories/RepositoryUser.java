@@ -24,7 +24,7 @@ public class RepositoryUser {
 	 * Exige que a person já exista (id_person = person.id).
 	 */
 	private static final String SQL_INSERT =
-			"INSERT INTO user(id_person, password_hash) VALUES (?,?) "
+			"INSERT INTO \"user\"(id_person, password_hash) VALUES (?,?) "
 			+ "ON CONFLICT (id_person) DO NOTHING";
 	
 	/**
@@ -32,27 +32,27 @@ public class RepositoryUser {
 	 */
 	private static final String SQL_FIND_BY_ID =
 			"SELECT u.id, u.id_person, u.password_hash, p.first_name, p.last_name, p.email "
-			+ "FROM user u JOIN person p ON u.id_person = p.id WHERE u.id = ?";
+			+ "FROM \"user\" u JOIN person p ON u.id_person = p.id WHERE u.id = ?";
 
 	/**
 	 * SELECT por email com JOIN em person.
 	 */
 	private static final String SQL_FIND_BY_EMAIL =
 			"SELECT u.id, u.id_person, u.password_hash, p.first_name, p.last_name, p.email "
-			+ "FROM user u JOIN person p ON u.id_person = p.id WHERE p.email = ?";
+			+ "FROM \"user\" u JOIN person p ON u.id_person = p.id WHERE p.email = ?";
 
 	/**
 	 * SELECT de todos os usuários com JOIN em person.
 	 */
 	private static final String SQL_FIND_ALL =
 			"SELECT u.id, u.id_person, u.password_hash, p.first_name, p.last_name, p.email "
-			+ "FROM user u JOIN person p ON u.id_person = p.id";
+			+ "FROM \"user\" u JOIN person p ON u.id_person = p.id";
 
 	/**
 	 * 
 	 * DELETE de um usuário
 	 */
-	private static final String DELETE_FIND_BY_ID  = "DELETE FROM user WHERE id = ? ";
+	private static final String DELETE_FIND_BY_ID  = "DELETE FROM \"user\" WHERE id = ? ";
 
 
 	/**
