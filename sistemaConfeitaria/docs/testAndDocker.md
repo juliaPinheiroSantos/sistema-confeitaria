@@ -34,16 +34,41 @@ O projeto usa a classe **DBConnection**, que lê variáveis de ambiente para con
 | `DB_USER`   | Usuário    | `admin`                      |
 | `DB_PASSWORD` | Senha    | `12345`                      |
 
-- **Na sua máquina:** o banco está no Docker e a porta **5434** do host é mapeada para a 5432 do container. Por isso o padrão `127.0.0.1:5434` funciona quando você roda o teste na IDE ou com `mvn test`.
+- **Na sua máquina (Docker):** o banco está no Docker e a porta **5434** do host é mapeada para a 5432 do container. Por isso o padrão `127.0.0.1:5434` funciona quando você roda o teste na IDE ou com `mvn test`.
 - **Dentro do Docker:** o teste roda em um container na mesma rede do Postgres; aí usamos `DB_HOST=postgres` e `DB_PORT=5432` (porta interna do serviço).
+- **Sem Docker (PostgreSQL local):** é obrigatório ter o PostgreSQL instalado e rodando localmente. Crie o banco `confeitaria`, usuário `admin`, senha `12345`, e deixe o servidor escutando na porta **5434** (ou defina `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` por variável de ambiente ou system property).
 
 ---
 
-## 3. Rodar o teste na sua máquina (com Postgres no Docker)
+## 3. Rodar o teste sem Docker (PostgreSQL local)
+
+Se você **não** usar Docker, precisa ter o **PostgreSQL instalado** na sua máquina:
+
+1. Instale o PostgreSQL (site oficial ou gerenciador de pacotes).
+2. Crie o banco e o usuário, por exemplo:
+   - Banco: `confeitaria`
+   - Usuário: `admin`
+   - Senha: `12345`
+   - Porta: **5434** (ou a que você usar; o padrão do projeto é 5434 para não conflitar com uma instalação padrão na 5432).
+3. Inicie o servidor PostgreSQL e rode os testes:
+
+```bash
+# Windows (PowerShell), definindo JAVA_HOME se necessário:
+.\mvnw.cmd test
+
+# Ou com variáveis explícitas (porta 5432, por exemplo):
+$env:DB_PORT = "5432"; .\mvnw.cmd test
+```
+
+Se o Postgres estiver em outra porta ou outro host, use as variáveis de ambiente (ou system properties) `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
+
+---
+
+## 4. Rodar o teste na sua máquina (com Postgres no Docker)
 
 Passo a passo:
 
-### 3.1 Subir só o PostgreSQL
+### 4.1 Subir só o PostgreSQL
 
 No diretório do projeto (onde está o `docker-compose.yml`):
 
@@ -53,7 +78,7 @@ docker-compose up -d postgres
 
 Isso sobe o container **confeitaria-postgres** com o banco `confeitaria` (usuário `admin`, senha `12345`) na porta **5434** do seu PC.
 
-### 3.2 (Opcional) Garantir banco limpo
+### 4.2 (Opcional) Garantir banco limpo
 
 Se quiser começar do zero (apaga dados e tabelas):
 
@@ -64,7 +89,7 @@ docker-compose up -d postgres
 
 O `-v` remove o volume; na próxima subida o banco é recriado vazio.
 
-### 3.3 Rodar o teste
+### 4.3 Rodar o teste
 
 Ainda no diretório do projeto (onde está o `pom.xml`):
 
@@ -86,7 +111,7 @@ mvn test -Dtest=UserRegistrationTest#cadastrarUsuario
 
 O teste usa os valores **padrão** do DBConnection (`127.0.0.1`, `5434`, `confeitaria`, `admin`, `12345`), que batem com o que o `docker-compose` expõe. Não é obrigatório definir variáveis de ambiente para esse cenário.
 
-### 3.4 Rodar pela IDE
+### 4.4 Rodar pela IDE
 
 1. Abra a classe **UserRegistrationTest**.
 2. Clique com o botão direito na classe ou no método **cadastrarUsuario**.
@@ -94,18 +119,20 @@ O teste usa os valores **padrão** do DBConnection (`127.0.0.1`, `5434`, `confei
 
 A IDE usa o mesmo DBConnection; desde que o Postgres esteja no ar em `127.0.0.1:5434`, o teste conecta no banco do Docker.
 
+**JUnit:** o Maven já baixa o JUnit na primeira vez que você roda `mvn test`; não é necessário baixar JARs manualmente.
+
 ---
 
-## 4. Rodar o teste dentro do Docker
+## 5. Rodar o teste dentro do Docker
 
 Aqui o **próprio teste** roda em um container, usando a rede do `docker-compose` para falar com o Postgres.
 
-### 4.1 O que muda
+### 5.1 O que muda
 
 - O teste não roda na sua máquina, e sim num container com Maven.
 - A conexão usa **host do serviço**: `DB_HOST=postgres` e `DB_PORT=5432` (porta interna do serviço `postgres`).
 
-### 4.2 Comando
+### 5.2 Comando
 
 Com o serviço **test** configurado no `docker-compose` (veja a seção 5), na pasta do projeto:
 
@@ -122,7 +149,7 @@ docker-compose run --rm test
 
 O `--rm` remove o container após o fim; a saída do `mvn test` aparece no terminal.
 
-### 4.3 Por que fazer isso
+### 5.3 Por que fazer isso
 
 - **CI/CD:** no pipeline (GitHub Actions, GitLab CI, etc.) você sobe o Postgres e roda `docker-compose run test` (ou equivalente).
 - **Mesmo ambiente para todos:** todo mundo usa a mesma imagem e as mesmas variáveis de ambiente para o teste.
@@ -130,7 +157,7 @@ O `--rm` remove o container após o fim; a saída do `mvn test` aparece no termi
 
 ---
 
-## 5. Configuração do serviço de teste no docker-compose
+## 6. Configuração do serviço de teste no docker-compose
 
 O arquivo **docker-compose.yml** pode ter um serviço **test** que:
 
@@ -147,7 +174,7 @@ Assim, quando você roda `docker-compose run --rm test`, o Docker:
 - Nesse container, executa Maven e os testes; os testes conectam em `postgres:5432`.
 - Remove o container ao final (com `--rm`).
 
-O **docker-compose.yml** do projeto já inclui o serviço **test**. Ele usa a imagem **maven:3.9-eclipse-temurin-17**, monta o diretório do projeto em `/app`, define as variáveis de ambiente para o banco (`DB_HOST=postgres`, `DB_PORT=5432`, etc.) e executa `mvn test`. O serviço depende do **postgres** (só roda depois do healthcheck).
+O **docker-compose.yml** do projeto inclui os serviços **postgres**, **app** e **test**. O serviço **app** é buildado pelo **Dockerfile** com Maven (`mvn package -DskipTests`), compilando apenas o código principal e copiando as dependências (driver PostgreSQL, etc.) para a imagem. O serviço **test** usa a imagem **maven:3.9-eclipse-temurin-17**, monta o diretório do projeto em `/app`, define as variáveis de ambiente para o banco (`DB_HOST=postgres`, `DB_PORT=5432`, etc.) e executa `mvn test`. Ambos dependem do **postgres** (só rodam depois do healthcheck).
 
 **Comando para rodar o teste dentro do Docker:**
 
@@ -161,7 +188,7 @@ O `-d` deixa o Postgres em segundo plano; o `run --rm test` sobe um container te
 
 ---
 
-## 6. Resumo rápido
+## 7. Resumo rápido
 
 | Onde roda      | Banco              | Como rodar                          |
 |----------------|--------------------|-------------------------------------|
@@ -172,7 +199,7 @@ O teste em si é o mesmo (**UserRegistrationTest.cadastrarUsuario()**); só muda
 
 ---
 
-## 7. Código completo do teste
+## 8. Código completo do teste
 
 Classe **UserRegistrationTest** (pacote `app`), em `src/test/java/app/UserRegistrationTest.java`:
 
@@ -228,7 +255,7 @@ class UserRegistrationTest {
         assertNotNull(area.getId(), "Area deve ter id após persistência");
 
         // 2. Criar Address (com a Area)
-        Address address = new Address(area, "12345-678", "Rua das Flores", 100, "Sala 1", "Próximo ao mercado");
+        Address address = new Address(area, "12345678", "Rua das Flores", 100, "Sala 1", "Próximo ao mercado");
         boolean addressCriado = repositoryAddress.createAddress(address);
         assertTrue(addressCriado, "Address deve ser criado");
 

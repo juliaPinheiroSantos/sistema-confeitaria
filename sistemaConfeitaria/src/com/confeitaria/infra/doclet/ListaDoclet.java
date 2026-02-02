@@ -24,7 +24,7 @@ public class ListaDoclet implements Doclet {
 
     @Override
     public boolean run(DocletEnvironment environment) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter("DOCUMENTACAO.md"))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("docs/documentation.md"))) {
             writer.println("# 🎂 Documentação do Sistema de Confeitaria");
             writer.println("Documentação técnica gerada automaticamente via **Custom Doclet**.\n");
 
@@ -55,7 +55,7 @@ public class ListaDoclet implements Doclet {
                     }
                 }
             }
-            System.out.println("✅ Sucesso! O arquivo DOCUMENTACAO.md foi gerado.");
+            System.out.println("✅ Sucesso! O arquivo docs/documentation.md foi gerado.");
             return true;
         } catch (Exception e) {
             e.printStackTrace();

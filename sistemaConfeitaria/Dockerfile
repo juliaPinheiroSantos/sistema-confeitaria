@@ -1,28 +1,23 @@
-# Estágio 1: Build e Download do Driver
-FROM eclipse-temurin:23-jdk AS builder
+# Estágio 1: Build com Maven (mesmo processo que local)
+FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /app
 
-# Instala o curl para baixar o driver
-RUN apt-get update && apt-get install -y curl
+# Copia o POM e baixa dependências (cache de camada)
+COPY pom.xml .
+RUN mvn dependency:go-offline -B -q
 
-# Baixa o driver JDBC do PostgreSQL (versão estável atual)
-RUN curl -o postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.7.2.jar
-
-# Copia o código fonte
+# Copia o código e compila (só código principal; testes são ignorados pelo package)
 COPY src ./src
-
-# Compila os arquivos incluindo o JAR do Postgres no classpath
-RUN mkdir bin && \
-    javac -cp "postgresql.jar" -d bin $(find src -name "*.java")
+RUN mvn package -DskipTests -B -q && \
+    mvn dependency:copy-dependencies -DoutputDirectory=target/dependency -B -q
 
 # Estágio 2: Runtime
-FROM eclipse-temurin:23-jre
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Copia os binários compilados e o driver do estágio anterior
-COPY --from=builder /app/bin .
-COPY --from=builder /app/postgresql.jar .
+# Copia classes e dependências (PostgreSQL driver, etc.)
+COPY --from=builder /app/target/classes /app/classes
+COPY --from=builder /app/target/dependency /app/dependency
 
-# Executa a aplicação incluindo o driver e a pasta atual no classpath
-# Substitua 'app.Main' pelo nome real da sua classe principal
-ENTRYPOINT ["java", "-cp", ".:postgresql.jar", "app.Main"]
+# Executa a aplicação
+ENTRYPOINT ["java", "-cp", "/app/classes:/app/dependency/*", "app.Main"]
