@@ -32,5 +32,24 @@ services:
       - DB_USER=admin
       - DB_PASSWORD=12345
 
+  # Serviço para rodar os testes (JUnit) dentro do Docker.
+  # Uso: docker-compose up -d postgres && docker-compose run --rm test
+  test:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: confeitaria-test
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=confeitaria
+      - DB_USER=admin
+      - DB_PASSWORD=12345
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: mvn test
+
 volumes:
   postgres_data:
