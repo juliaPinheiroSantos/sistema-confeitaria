@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "sistemaConfeitaria/app.Main",
+      "projectName": "sistema-confeitaria"
+    },
+    {
+      "type": "java",
+      "name": "Main (app.Main)",
+      "request": "launch",
+      "mainClass": "app.Main",
+      "projectName": "sistema-confeitaria"
+    }
+  ]
+}

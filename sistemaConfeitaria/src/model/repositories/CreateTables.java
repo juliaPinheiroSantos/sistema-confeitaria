@@ -20,6 +20,20 @@ public class CreateTables {
 		createTableOrder();
 		createTableOrderItems();
 	}
+
+	/**
+	 * Remove todos os dados das tabelas (ordem reversa das FKs).
+	 * Útil para testes que precisam de banco limpo a cada execução.
+	 */
+	public static void truncateAllTables() {
+		String sql = "TRUNCATE order_items, \"order\", product, \"user\", flavor, person, address, area RESTART IDENTITY CASCADE";
+		try (Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement()) {
+			stmt.execute(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static void createTablePerson() {
 		String createTablePerson = "CREATE TABLE IF NOT EXISTS"
