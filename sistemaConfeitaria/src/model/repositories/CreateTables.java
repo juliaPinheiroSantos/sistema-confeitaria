@@ -14,7 +14,9 @@ public class CreateTables {
 		createTableArea();
 		createTableAddress();
 		createTablePerson();
+		createTableFlavorLevel();
 		createTableFlavor();
+		createTableSize();
 		createTableUser();
 		createTableProduct();
 		createTableOrder();
@@ -150,6 +152,49 @@ public class CreateTables {
 			e.printStackTrace();
 		}
 	}
+
+	public static void createTableFlavorLevel(){
+		String createTableFlavorLevel = "CREATE TABLE IF NOT EXISTS"
+				+ " flavor_level (id SERIAL PRIMARY KEY,"
+				+ "name VARCHAR(12) NOT NULL,"
+				+ "price DECIMAL(10, 2) NOT NULL";
+		
+		try(Connection conn = DBConnection.getConnection()){
+			try {
+				Statement stmt = conn.createStatement();
+				stmt.execute(createTableFlavorLevel);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Create flavor_level sucessful");
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+
+	public static void createTableSize(){
+		String createTableSize = "CREATE TABLE IF NOT EXISTS"
+				+ " size (id SERIAL PRIMARY KEY,"
+				+ "name VARCHAR(4) NOT NULL,"
+				+ "yield VARCHAR(20) NOT NULL,"
+				+ "weight VARCHAR(10) NOT NULL"
+				+ "price DECIMAL(10, 2) NOT NULL";
+		
+		try(Connection conn = DBConnection.getConnection()){
+			try {
+				Statement stmt = conn.createStatement();
+				stmt.execute(createTableSize);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Create size sucessfull");
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 	
 	
 	public static void createTableProduct() {
@@ -157,10 +202,11 @@ public class CreateTables {
 				+ " product (id SERIAL PRIMARY KEY,"
 				+ "name VARCHAR(20) NOT NULL,"
 				+ "id_flavor INTEGER NOT NULL,"
-				+ "size VARCHAR(50),"
+				+ "id_size INTEGER NOT NULL, "
 				+ "base_price DECIMAL(10,2) NOT NULL,"
 				+ "description TEXT,"
-				+ "CONSTRAINT fk_flavor FOREIGN KEY (id_flavor) REFERENCES flavor(id)"
+				+ "CONSTRAINT fk_flavor FOREIGN KEY (id_flavor) REFERENCES flavor(id), "
+				+ "CONSTRAINT fk_size FOREIGN KEY (id_size) REFERENCES size(id)"
 				+ ");";
 		
 		try(Connection conn = DBConnection.getConnection()){

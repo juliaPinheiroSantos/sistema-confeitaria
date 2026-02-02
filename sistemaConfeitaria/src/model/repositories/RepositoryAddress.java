@@ -37,7 +37,8 @@ public class RepositoryAddress {
 	private static final String SQL_FIND_ALL =
 			"SELECT a.id, a.id_area, a.cep, a.street, a.number, a.complement, a.reference, "
 			+ "area.id AS area_id, area.name AS area_name, area.fee AS area_fee "
-			+ "FROM address a INNER JOIN area ON area.id = a.id_area";
+			+ "FROM address a "
+			+ "INNER JOIN area ON area.id = a.id_area";
 
 	/**
 	 * DELETE por id.

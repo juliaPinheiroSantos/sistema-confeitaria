@@ -198,7 +198,7 @@ Cada repositório (ex.: `RepositoryUser`, `RepositoryPerson`) segue a mesma estr
 2. **Métodos públicos:** `create`, `delete`, `findById`, `findByEmail`, `findAll` (nomes podem variar, ex.: `createUser`, `findByIdPerson`).
 3. **Método privado de mapeamento:** `mapResultSetToEntity(ResultSet rs)` — recebe o ResultSet já posicionado em uma linha (após `next()`), lê as colunas, instancia a entidade, preenche com setters e retorna. **Não** chama `next()`.
 4. **Recursos:** uso sistemático de try-with-resources para `Connection`, `PreparedStatement` e `ResultSet`.
-5. **Exceções:** métodos públicos declaram `throws SQLException`; não engolem a exceção.
+5. **Exceções:** métodos públicos declaram `throws SQLException`; não engolem (não tratam) a exceção.
 
 ---
 
