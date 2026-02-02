@@ -23,3 +23,8 @@
 hs_err_pid*
 replay_pid*
 /.metadata/
+*.~~*
+.~
+
+# Backup files (editor backup files ending with ~)
+*~
