@@ -1,1 +1,11 @@
 /bin/
+.metadata/
+.settings/
+.classpath
+.project
+.vscode/
+.idea/
+.gitignore
+.gitignore
+.md
+.target/
