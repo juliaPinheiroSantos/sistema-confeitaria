@@ -14,13 +14,12 @@ public class Flavor {
         setDescription(description);
     }
 
+    public Integer getId(){
+        return this.id;
+    }
 
     public void setId(Integer id){
         this.id = id;
-    }
-
-    public Integer getId(){
-        return this.id;
     }
 
     public String getName(){
@@ -39,13 +38,14 @@ public class Flavor {
         this.level = level;
     }
 
+    public void setDescription(String description){
+        this.description = description;
+    }
+
     public String getDescription(){
         return this.description;
     }
 
-    public void setDescription(String description){
-        this.description = description;
-    }
 
     @Override
     public String toString() {

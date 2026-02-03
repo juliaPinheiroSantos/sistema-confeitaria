@@ -20,10 +20,10 @@ public class DBConnection {
 	 */
 	public static Connection getConnection() throws SQLException {
 		String host = get("DB_HOST", "DB_HOST", "127.0.0.1");
-		String port = get("DB_PORT", "DB_PORT", "5434");
+		String port = get("DB_PORT", "DB_PORT", "5432");
 		String database = get("DB_NAME", "DB_NAME", "confeitaria");
-		String user = get("DB_USER", "DB_USER", "admin");
-		String password = get("DB_PASSWORD", "DB_PASSWORD", "12345");
+		String user = get("DB_USER", "DB_USER", "postgres");
+		String password = get("DB_PASSWORD", "DB_PASSWORD", "134340");
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 		return DriverManager.getConnection(url, user, password);
 	}

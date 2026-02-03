@@ -8,9 +8,9 @@ public class FlavorLevel {
 	public FlavorLevel(){}
 	
 	public FlavorLevel(Integer id, String name, Double price) {
-		this.id = id;
-		this.name = name;
-        this.price = price;
+		setId(id);
+		setName(name);
+		setPrice(price);
 		
 	}
 

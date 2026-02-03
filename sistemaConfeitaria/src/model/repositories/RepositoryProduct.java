@@ -157,9 +157,9 @@ public class RepositoryProduct {
      * Mapeia a linha atual do ResultSet para um objeto Product.
 	 * Espera colunas p.id, p.name, p.size, p.base_price, p.description,
 	 * e flavor_id, flavor_level, flavor_description (do JOIN com flavor).
-     * @param rs 
-     * @return
-     * @throws SQLException
+     * @param rs ResultSet posicionado na linha desejada
+     * @return instância de Product preenchida com os dados da linha
+     * @throws SQLException em erro ao ler colunas
      */
     public Product mapResultSetToProduct(ResultSet rs) throws SQLException{
         Product product = new Product();
@@ -175,7 +175,7 @@ public class RepositoryProduct {
         Size size = new Size();
         size.setId(rs.getInt("size_id"));
         size.setName(rs.getString("size_name"));
-        size.setYield(rs.getString("size.yield"));
+        size.setYield(rs.getString("size_yield"));
         size.setWeight(rs.getString("size_weight"));
         size.setPrice(rs.getObject("size_price") != null ? rs.getDouble("size_price") : null);
         
