@@ -10,12 +10,23 @@ services:
       - "0.0.0.0:5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    # Configurações do PostgreSQL para garantir persistência imediata
+    command: >
+      postgres
+      -c fsync=on
+      -c synchronous_commit=on
+      -c full_page_writes=on
+      -c wal_level=replica
+      -c max_connections=100
     healthcheck:
-      test: ["CMD-SHELL", "PGPASSWORD=12345 psql -U admin -d confeitaria -c 'SELECT 1' > /dev/null 2>&1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "PGPASSWORD=12345 psql -U admin -d confeitaria -c 'SELECT 1' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
     restart: unless-stopped
+    networks:
+      - confeitaria-network
 
   app:
     build:
@@ -31,6 +42,8 @@ services:
       - DB_NAME=confeitaria
       - DB_USER=admin
       - DB_PASSWORD=12345
+    networks:
+      - confeitaria-network
 
   # Serviço para rodar os testes (JUnit) dentro do Docker.
   # Uso: docker-compose up -d postgres && docker-compose run --rm test
@@ -50,6 +63,13 @@ services:
       postgres:
         condition: service_healthy
     command: mvn test
+    networks:
+      - confeitaria-network
 
 volumes:
   postgres_data:
+    driver: local
+
+networks:
+  confeitaria-network:
+    driver: bridge

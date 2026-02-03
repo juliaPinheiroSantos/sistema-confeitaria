@@ -4,6 +4,111 @@ Este guia explica: (1) o que o teste faz, (2) como rodar o teste na sua máquina
 
 ---
 
+## 0. Rodar todo o projeto no Docker e abrir as telas (VNC)
+
+Para rodar **tudo** no Docker (Postgres + app) e **ver as telas** (Sistema de Confeitaria) abrindo:
+
+1. **Suba os serviços (Postgres + app com GUI):**
+   ```bash
+   docker compose up -d postgres
+   docker compose build app-gui
+   docker compose up app-gui
+   ```
+2. **Abra um cliente VNC** e conecte em **localhost:5900** (sem senha).
+   - Windows: [TigerVNC Viewer](https://tigervnc.org/), [RealVNC Viewer](https://www.realvnc.com/en/connect/download/viewer/) ou extensão no browser (noVNC).
+   - WSL/Linux: `apt install tigervnc-viewer` e rode `vncviewer localhost:5900`.
+
+Você verá o desktop do container e as janelas do app (tela inicial, Cadastro, Login). O projeto roda 100% no Docker; as telas são exibidas via VNC.
+
+**Se a janela não aparecer no VNC:** (1) Clique na área de trabalho do fluxbox ou pressione **Alt+Tab** para trazer a janela "Sistema de Confeitaria" para a frente; (2) Clique com o botão direito no desktop para abrir o menu do fluxbox e ver janelas abertas; (3) Atualize a tela do cliente VNC (por exemplo, redimensione a janela do viewer).
+
+### Por que usamos VNC e não abre direto no meu PC?
+
+Quando o **app roda dentro do Docker**, ele está em um container Linux isolado: **não existe tela/monitor dentro do container**. O Windows (ou seu desktop) não “enxerga” janelas que nascem lá dentro. Por isso:
+
+- **App no Docker** → precisamos de uma “tela virtual” (Xvfb) dentro do container e de um jeito de **enviar essa tela para o seu PC** = **VNC**. O cliente VNC no seu PC se conecta ao container e mostra o que está sendo desenhado lá.
+
+Se você quiser que as **janelas abram direto no seu PC** (sem VNC, como um programa normal):
+
+- Rode **só o Postgres no Docker** e o **app na sua máquina** (WSL ou Windows). Aí o Java usa a tela do seu sistema e as janelas Swing abrem normalmente.
+
+```bash
+docker compose up -d postgres
+export DB_HOST=127.0.0.1
+export DB_PORT=5434
+./mvnw exec:java
+```
+
+Ou use o script: `./run-app-gui.sh`. As telas abrem direto no seu PC; não precisa de VNC.
+
+| Onde o app roda | Onde as telas aparecem |
+|-----------------|-------------------------|
+| **No Docker** (app-gui) | No cliente VNC (localhost:5900) |
+| **No seu PC** (mvn exec:java) | Direto na sua tela (WSLg ou Windows) |
+
+---
+
+## 0.1 Docker pelo WSL
+
+Se você usa **Docker pelo WSL** (Windows Subsystem for Linux), abra o terminal do WSL (Ubuntu, etc.) e use os comandos em **bash** na pasta do projeto.
+
+**Caminho do projeto no WSL** (se o projeto está em `C:\Users\...\sistema-confeitaria\sistemaConfeitaria`):
+
+```bash
+cd /mnt/c/Users/SEU_USUARIO/Documents/sistema-confeitaria/sistemaConfeitaria
+```
+
+Substitua `SEU_USUARIO` pelo seu usuário do Windows.
+
+**Subir PostgreSQL e rodar o app (headless, só fluxo):**
+
+```bash
+docker compose up -d postgres
+docker compose build app
+docker compose run --rm app
+```
+
+**Ver as telas abrindo (tudo no Docker + VNC):** suba o Postgres e o app com GUI; as janelas Swing ficam visíveis via VNC:
+
+```bash
+docker compose up -d postgres
+docker compose build app-gui
+docker compose up app-gui
+```
+
+Depois abra um **cliente VNC** (RealVNC, TigerVNC, ou no navegador: [noVNC](https://github.com/novnc/noVNC)) e conecte em **localhost:5900**. Não é necessário senha (uso local). Você verá o desktop do container e as janelas do Sistema de Confeitaria (tela inicial, Cadastro, Login).
+
+**Alternativa (app na sua máquina, só Postgres no Docker):** para ver as telas sem VNC, rode o app no WSL/Windows e use o Postgres no Docker:
+
+```bash
+docker compose up -d postgres
+export DB_HOST=127.0.0.1
+export DB_PORT=5434
+./mvnw exec:java
+```
+
+Ou use o script: `chmod +x run-app-gui.sh` e `./run-app-gui.sh`.
+
+**Subir PostgreSQL e rodar os testes:**
+
+```bash
+docker compose up -d postgres
+docker compose run --rm test
+```
+
+Se a sua instalação usar `docker-compose` (hífen, v1):
+
+```bash
+docker-compose up -d postgres
+docker-compose build app
+docker-compose run --rm app
+docker-compose run --rm test
+```
+
+Na saída do `app` você deve ver `[FLOW] ... TABLES_CREATED`, `[FLOW] ... DEFAULT_AREAS_SEEDED` e `[FLOW] ... HOME_SHOWN | simulated`.
+
+---
+
 ## 1. O que o teste faz
 
 O teste **UserRegistrationTest.cadastrarUsuario()** valida todo o fluxo de cadastro de um usuário:

@@ -1,23 +1,25 @@
-# Estágio 1: Build com Maven (mesmo processo que local)
+# Java Swing application (javax.swing) - Bakery System
+# Build: Maven. Runtime: Eclipse Temurin 17 with full JDK (includes Swing/AWT).
+
+# Stage 1: Build with Maven (Java 17)
 FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /app
 
-# Copia o POM e baixa dependências (cache de camada)
 COPY pom.xml .
 RUN mvn dependency:go-offline -B -q
 
-# Copia o código e compila (só código principal; testes são ignorados pelo package)
 COPY src ./src
 RUN mvn package -DskipTests -B -q && \
     mvn dependency:copy-dependencies -DoutputDirectory=target/dependency -B -q
 
-# Estágio 2: Runtime
-FROM eclipse-temurin:17-jre
+# Stage 2: Runtime - JDK image (includes Java Swing / javax.swing)
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
-# Copia classes e dependências (PostgreSQL driver, etc.)
 COPY --from=builder /app/target/classes /app/classes
 COPY --from=builder /app/target/dependency /app/dependency
 
-# Executa a aplicação
-ENTRYPOINT ["java", "-cp", "/app/classes:/app/dependency/*", "app.Main"]
+# Java Swing: GUI uses javax.swing (JFrame, JButton, etc.). In Docker there is no display
+# by default, so we run headless: app logs flow and exits. For GUI run locally: mvn exec:java
+ENV JAVA_OPTS="-Djava.awt.headless=true"
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -cp /app/classes:/app/dependency/* app.Main"]

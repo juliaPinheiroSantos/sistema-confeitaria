@@ -1,0 +1,24 @@
+# App com GUI no Docker: display virtual (Xvfb) + VNC para ver as telas.
+# Uso: docker compose up app-gui e conecte um cliente VNC em localhost:5900.
+
+FROM maven:3.9-eclipse-temurin-17 AS builder
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B -q
+COPY src ./src
+RUN mvn package -DskipTests -B -q && \
+    mvn dependency:copy-dependencies -DoutputDirectory=target/dependency -B -q
+
+FROM eclipse-temurin:17-jdk
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xvfb x11vnc fluxbox \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY --from=builder /app/target/classes /app/classes
+COPY --from=builder /app/target/dependency /app/dependency
+COPY start-gui.sh /start-gui.sh
+RUN sed -i 's/\r$//' /start-gui.sh && chmod +x /start-gui.sh
+
+EXPOSE 5900
+CMD ["/start-gui.sh"]

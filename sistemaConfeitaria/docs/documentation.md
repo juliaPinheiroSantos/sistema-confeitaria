@@ -2,7 +2,13 @@
 
 Documentação técnica gerada automaticamente via **Custom Doclet**.
 
-Para rodar testes e usar **Docker** (PostgreSQL em container, testes no Docker), veja [testAndDocker.md](testAndDocker.md).
+Para rodar testes e usar **Docker** (PostgreSQL em container, testes no Docker), veja [testAndDocker.md](testAndDocker.md).  
+**Rodar todo o projeto no Docker e ver as telas:** use o serviço `app-gui` e conecte um cliente VNC em localhost:5900 (seção **0. Rodar todo o projeto no Docker e abrir as telas** em testAndDocker.md).  
+Se você usa **Docker pelo WSL**, use os comandos em bash no WSL; a seção **0.1 Docker pelo WSL** em testAndDocker.md tem o passo a passo.
+
+**Documentação minuciosa de Views e Controllers (pt-BR):** [VIEWS-E-CONTROLLERS-DETALHADO.md](VIEWS-E-CONTROLLERS-DETALHADO.md) — cada view e cada controller explicados em detalhe (atributos, métodos, parâmetros, retornos, fluxo).
+
+**Código linha a linha (pt-BR):** [CODIGO-LINHA-A-LINHA.md](CODIGO-LINHA-A-LINHA.md) — explicação de cada linha dos controllers e das views.
 
 ---
 

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +81,26 @@ public class RepositoryPerson {
 			stmt.setInt(4, person.getAddress().getInteger());
 			int rowsAffected = stmt.executeUpdate();
 			return rowsAffected > 0;
+		}
+	}
+
+	/**
+	 * Insere uma nova person e retorna o id gerado. Se o email já existir, nenhuma linha é inserida.
+	 *
+	 * @param person pessoa a ser persistida (não nula; getAddress().getInteger() não nulo)
+	 * @return id da person criada ou null se email duplicado / erro
+	 */
+	public Integer createPersonAndReturnId(Person person) throws SQLException {
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+			stmt.setString(1, person.getFirstName());
+			stmt.setString(2, person.getLastName());
+			stmt.setString(3, person.getEmail());
+			stmt.setInt(4, person.getAddress().getInteger());
+			if (stmt.executeUpdate() == 0) return null;
+			try (ResultSet rs = stmt.getGeneratedKeys()) {
+				return rs.next() ? rs.getInt(1) : null;
+			}
 		}
 	}
 
