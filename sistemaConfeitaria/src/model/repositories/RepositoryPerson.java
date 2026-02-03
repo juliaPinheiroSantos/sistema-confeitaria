@@ -34,7 +34,8 @@ public class RepositoryPerson {
 			"SELECT p.id AS person_id, p.first_name, p.last_name, p.email, p.id_address, "
 			+ "a.id AS address_id, a.id_area, a.cep, a.street, a.number, a.complement, a.reference, "
 			+ "ar.id AS area_id, ar.name AS area_name, ar.fee AS area_fee "
-			+ "FROM person p INNER JOIN address a ON a.id = p.id_address "
+			+ "FROM person p "
+            + "INNER JOIN address a ON a.id = p.id_address "
 			+ "INNER JOIN area ar ON ar.id = a.id_area WHERE p.id = ?";
 
 	/**

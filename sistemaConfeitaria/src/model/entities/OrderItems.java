@@ -16,7 +16,7 @@ public class OrderItems {
 	public OrderItems(Product product, Integer quantity, Double priceAtMoment) {
 		setProduct(product);
 		setQuantity(quantity);
-		setPriceAtMoment(priceAtMoment != null ? priceAtMoment : (product != null && product.getPrice() != null ? product.getPrice() : 0.0));
+		setPriceAtMoment(priceAtMoment != null ? priceAtMoment : (product != null && product.getBasePrice() != null ? product.getBasePrice() : 0.0));
 	}
 
 	public Integer getId() {
