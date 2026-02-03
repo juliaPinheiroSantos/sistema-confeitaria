@@ -8,13 +8,15 @@ public class CreateTables {
 
 	/**
 	 * Cria todas as tabelas na ordem das dependências (FK).
-	 * Ordem: area → address → person → flavor → user → product → order → order_items.
+	 * Ordem: area → address → person → flavor_level → flavor → size → user → product → order → order_items.
 	 */
 	public static void createAllTables() {
 		createTableArea();
 		createTableAddress();
 		createTablePerson();
+		createTableFlavorLevel();
 		createTableFlavor();
+		createTableSize();
 		createTableUser();
 		createTableProduct();
 		createTableOrder();
@@ -26,7 +28,7 @@ public class CreateTables {
 	 * Útil para testes que precisam de banco limpo a cada execução.
 	 */
 	public static void truncateAllTables() {
-		String sql = "TRUNCATE order_items, \"order\", product, \"user\", flavor, person, address, area RESTART IDENTITY CASCADE";
+		String sql = "TRUNCATE order_items, \"order\", product, \"user\", size, flavor, flavor_level, person, address, area RESTART IDENTITY CASCADE";
 		try (Connection conn = DBConnection.getConnection();
 				Statement stmt = conn.createStatement()) {
 			stmt.execute(sql);
@@ -171,10 +173,11 @@ public class CreateTables {
 				+ " product (id SERIAL PRIMARY KEY,"
 				+ "name VARCHAR(20) NOT NULL,"
 				+ "id_flavor INTEGER NOT NULL,"
-				+ "size VARCHAR(50),"
-				+ "base_price DECIMAL(10,2) NOT NULL,"
+				+ "id_size INTEGER NOT NULL,"
+				+ "base_price DECIMAL(10, 2) NOT NULL,"
 				+ "description TEXT,"
-				+ "CONSTRAINT fk_flavor FOREIGN KEY (id_flavor) REFERENCES flavor(id)"
+				+ "CONSTRAINT fk_flavor FOREIGN KEY (id_flavor) REFERENCES flavor(id),"
+				+ "CONSTRAINT fk_size FOREIGN KEY (id_size) REFERENCES \"size\"(id)"
 				+ ");";
 		
 		try(Connection conn = DBConnection.getConnection()){
@@ -220,13 +223,29 @@ public class CreateTables {
 	}	
 
 
+	public static void createTableFlavorLevel() {
+		String sql = "CREATE TABLE IF NOT EXISTS flavor_level ("
+				+ "id SERIAL PRIMARY KEY,"
+				+ "name VARCHAR(12) NOT NULL,"
+				+ "price DECIMAL(10, 2) NOT NULL"
+				+ ");";
+		try (Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement()) {
+			stmt.execute(sql);
+			System.out.println("Create flavor_level successful");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void createTableFlavor(){
 		String createTableFlavor = "CREATE TABLE IF NOT EXISTS"
 			+ " flavor (id SERIAL PRIMARY KEY,"
 			+ "name TEXT NOT NULL,"
-			+ "level VARCHAR(50),"
-			+ "price DECIMAL (10,2) NOT NULL,"
-			+ "description TEXT"
+			+ "id_flavor_level INTEGER NOT NULL,"
+			+ "price DECIMAL(10, 2) NOT NULL,"
+			+ "description TEXT,"
+			+ "CONSTRAINT fk_flavor_level FOREIGN KEY (id_flavor_level) REFERENCES flavor_level(id)"
 			+ ");";
 
 			try(Connection conn = DBConnection.getConnection()){
@@ -242,6 +261,26 @@ public class CreateTables {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Tabela size (tamanhos). Nome entre aspas pois "size" é palavra reservada em SQL.
+	 */
+	public static void createTableSize() {
+		String sql = "CREATE TABLE IF NOT EXISTS \"size\" ("
+				+ "id SERIAL PRIMARY KEY,"
+				+ "name VARCHAR(4) NOT NULL,"
+				+ "yield VARCHAR(20) NOT NULL,"
+				+ "weight VARCHAR(10) NOT NULL,"
+				+ "price DECIMAL(10, 2) NOT NULL"
+				+ ");";
+		try (Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement()) {
+			stmt.execute(sql);
+			System.out.println("Create size successful");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
