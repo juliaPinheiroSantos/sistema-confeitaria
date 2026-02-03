@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +64,28 @@ public class RepositoryAddress {
 			stmt.setString(6, address.getReference());
 			int rowsAffected = stmt.executeUpdate();
 			return rowsAffected > 0;
+		}
+	}
+
+	/**
+	 * Insere um novo endereço e retorna o id gerado. A área deve já existir.
+	 *
+	 * @param address endereço a ser persistido (getArea().getId() != null)
+	 * @return id do endereço criado ou null em caso de erro
+	 */
+	public Integer createAddressAndReturnId(Address address) throws SQLException {
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+			stmt.setInt(1, address.getArea().getId());
+			stmt.setString(2, address.getCep());
+			stmt.setString(3, address.getStreet());
+			stmt.setObject(4, address.getNumber());
+			stmt.setString(5, address.getComplement());
+			stmt.setString(6, address.getReference());
+			if (stmt.executeUpdate() == 0) return null;
+			try (ResultSet rs = stmt.getGeneratedKeys()) {
+				return rs.next() ? rs.getInt(1) : null;
+			}
 		}
 	}
 
