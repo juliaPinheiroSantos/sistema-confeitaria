@@ -174,7 +174,6 @@ public class CreateTables {
 				+ "name VARCHAR(20) NOT NULL,"
 				+ "id_flavor INTEGER NOT NULL,"
 				+ "id_size INTEGER NOT NULL,"
-				+ "base_price DECIMAL(10, 2) NOT NULL,"
 				+ "description TEXT,"
 				+ "CONSTRAINT fk_flavor FOREIGN KEY (id_flavor) REFERENCES flavor(id),"
 				+ "CONSTRAINT fk_size FOREIGN KEY (id_size) REFERENCES \"size\"(id)"
