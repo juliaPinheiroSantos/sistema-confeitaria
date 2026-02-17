@@ -19,7 +19,7 @@ public class ViewHome extends JFrame {
     }
 
     private void configureFrame() {
-        setTitle("Sistema de Confeitaria");
+        setTitle("Thalita Docuras");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(520, 420);
         setLocation(80, 80);
@@ -45,7 +45,7 @@ public class ViewHome extends JFrame {
         section.setBackground(ViewTheme.BACKGROUND);
         section.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel title = ViewTheme.createTitleLabel("Sistema de Confeitaria");
+        JLabel title = ViewTheme.createTitleLabel("Thalita Docuras");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         section.add(title);
 

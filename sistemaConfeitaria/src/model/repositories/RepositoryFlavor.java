@@ -22,7 +22,7 @@ public class RepositoryFlavor {
      * INSERT na tabela flavor. Exige que o flavor_level já exista (id_flavor = flavor_level.id)
      */
     public static final String SQL_INSERT = 
-            "INSERT INTO flavor(name, id_flavor_level, description) VALUES (?, ?, ?)";
+            "INSERT INTO flavor(name, id_flavor_level, price, description) VALUES (?, ?, ?, ?)";
 
 
     /**
@@ -41,6 +41,16 @@ public class RepositoryFlavor {
             + "FROM flavor f "
             + "INNER JOIN flavor_level fl ON f.id_flavor_level = fl.id "
             + "WHERE f.id = ?";
+
+    /**
+     * SELECT por nome com JOIN em flavor_level.
+     */
+    public static final String SQL_FIND_BY_NAME =
+            "SELECT f.id, f.name, f.id_flavor_level, f.description, "
+            + "fl.id AS flavor_level_id, fl.name AS flavor_level_name, fl.price AS flavor_level_price "
+            + "FROM flavor f "
+            + "INNER JOIN flavor_level fl ON f.id_flavor_level = fl.id "
+            + "WHERE f.name = ?";
     
 
     /** 
@@ -64,7 +74,9 @@ public class RepositoryFlavor {
                 PreparedStatement stmt = conn.prepareStatement(SQL_INSERT)){
             stmt.setString(1, flavor.getName());
             stmt.setInt(2, flavor.getLevel().getId());
-            stmt.setString(3, flavor.getDescription());
+            Double price = flavor.getLevel() != null ? flavor.getLevel().getPrice() : null;
+            stmt.setDouble(3, price != null ? price : 0.0);
+            stmt.setString(4, flavor.getDescription());
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
                     
@@ -107,6 +119,25 @@ public class RepositoryFlavor {
     } 
 
     /**
+     * Busca sabor pelo nome.
+     * @param name nome do sabor
+     * @return o sabor encontrado ou null se não existir
+     * @throws SQLException em erro de acesso ao banco de dados
+     */
+    public Flavor findByNameFlavor(String name) throws SQLException {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(SQL_FIND_BY_NAME)) {
+            stmt.setString(1, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToFlavor(rs);
+                }
+                return null;
+            }
+        }
+    }
+
+    /**
      * Lista todos os sabores
      * 
      * @return lista de sabores (nunca null, mas pode ser vazia)
@@ -137,6 +168,7 @@ public class RepositoryFlavor {
     public Flavor mapResultSetToFlavor(ResultSet rs) throws SQLException{
         Flavor flavor = new Flavor();
         flavor.setId(rs.getInt("id"));
+        flavor.setName(rs.getString("name"));
         flavor.setDescription(rs.getString("description"));
 
         FlavorLevel level = new FlavorLevel();
@@ -144,6 +176,7 @@ public class RepositoryFlavor {
         level.setName(rs.getString("flavor_level_name"));
         level.setPrice(rs.getDouble("flavor_level_price"));
 
+        flavor.setLevel(level);
         return flavor;
         
     }

@@ -37,15 +37,15 @@ public class RepositoryProduct {
      */
 
     private static final String SQL_FIND_BY_ID = 
-            "SELECT p.id, p.name, p.id_flavor, p.id_size, p.base_price, p.size, p.description, "
-            + "f.id AS flavor_id, f.name AS flavor_name, f.level AS flavor_level, "
+            "SELECT p.id, p.name, p.id_flavor, p.id_size, p.base_price, p.description, "
+            + "f.id AS flavor_id, f.name AS flavor_name, "
             + "f.description AS flavor_description, s.id AS size_id, s.name AS size_name, s.yield AS size_yield, "
             + "s.weight AS size_weight, s.price AS size_price, fl.id AS flavor_level_id, "
             + "fl.name AS flavor_level_name, fl.price AS flavor_level_price "
             + "FROM product p "
             + "INNER JOIN flavor f ON f.id = p.id_flavor "
-            + "INNER JOIN size s ON s.id = p.id_size"
-            + "INNER JOIN flavorLevel fl ON fl.id = f.id_flavor_level"
+            + "INNER JOIN \"size\" s ON s.id = p.id_size "
+            + "INNER JOIN flavor_level fl ON fl.id = f.id_flavor_level "
             + "WHERE p.id = ?";
     
     
@@ -54,15 +54,15 @@ public class RepositoryProduct {
      */
 
     private static final String SQL_FIND_ALL = 
-            "SELECT p.id, p.name, p.id_flavor, p.id_size, p.base_price, p.size, p.description, "
-            + "f.id AS flavor_id, f.name AS flavor_name, f.level AS flavor_level, "
+            "SELECT p.id, p.name, p.id_flavor, p.id_size, p.base_price, p.description, "
+            + "f.id AS flavor_id, f.name AS flavor_name, "
             + "f.description AS flavor_description, s.id AS size_id, s.name AS size_name, s.yield AS size_yield, "
             + "s.weight AS size_weight, s.price AS size_price, fl.id AS flavor_level_id, "
             + "fl.name AS flavor_level_name, fl.price AS flavor_level_price "
             + "FROM product p "
             + "INNER JOIN flavor f ON f.id = p.id_flavor "
-            + "INNER JOIN size s ON s.id = p.id_size"
-            + "INNER JOIN flavorLevel fl ON fl.id = f.id_flavor_level";
+            + "INNER JOIN \"size\" s ON s.id = p.id_size "
+            + "INNER JOIN flavor_level fl ON fl.id = f.id_flavor_level";
     
 
     /**
@@ -71,6 +71,12 @@ public class RepositoryProduct {
 
     private static final String SQL_DELETE =
             "DELETE FROM product WHERE id = ?";
+
+    /**
+     * UPDATE por id.
+     */
+    private static final String SQL_UPDATE =
+            "UPDATE product SET name = ?, id_flavor = ?, id_size = ?, base_price = ?, description = ? WHERE id = ?";
     
     
     /**
@@ -86,8 +92,8 @@ public class RepositoryProduct {
                 PreparedStatement stmt = conn.prepareStatement(SQL_INSERT)){
             stmt.setString(1, product.getName());
             stmt.setInt(2, product.getFlavor().getId());
-            stmt.setDouble(3, product.getBasePrice());
-            stmt.setInt(4, product.getSize().getId());
+            stmt.setInt(3, product.getSize().getId());
+            stmt.setDouble(4, product.getBasePrice());
             stmt.setString(5, product.getDescription());
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;   
@@ -109,6 +115,26 @@ public class RepositoryProduct {
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
             }
+    }
+
+    /**
+     * Atualiza um produto existente.
+     * @param product produto com id preenchido
+     * @return true se pelo menos uma linha foi atualizada
+     * @throws SQLException em erro de acesso ao banco
+     */
+    public boolean updateProduct(Product product) throws SQLException {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(SQL_UPDATE)) {
+            stmt.setString(1, product.getName());
+            stmt.setInt(2, product.getFlavor().getId());
+            stmt.setInt(3, product.getSize().getId());
+            stmt.setDouble(4, product.getBasePrice());
+            stmt.setString(5, product.getDescription());
+            stmt.setInt(6, product.getId());
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
     }
 
 
@@ -170,6 +196,7 @@ public class RepositoryProduct {
 
         Flavor flavor = new Flavor();
         flavor.setId(rs.getInt("flavor_id"));
+        flavor.setName(rs.getString("flavor_name"));
         flavor.setDescription(rs.getString("flavor_description"));
 
         Size size = new Size();
@@ -185,6 +212,9 @@ public class RepositoryProduct {
         level.setName(rs.getString("flavor_level_name"));
         level.setPrice(rs.getObject("flavor_level_price") != null ? rs.getDouble("flavor_level_price") : null);
 
+        flavor.setLevel(level);
+        product.setFlavor(flavor);
+        product.setSize(size);
 
         return product;
 

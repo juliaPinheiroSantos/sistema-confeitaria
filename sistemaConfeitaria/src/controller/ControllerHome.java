@@ -2,9 +2,9 @@ package controller;
 
 import app.FlowHandler;
 import view.ViewCadastro;
-import view.ViewDashboard;
 import view.ViewHome;
 import view.ViewLogin;
+import view.ViewProducts;
 
 import javax.swing.*;
 
@@ -17,11 +17,14 @@ public class ControllerHome {
     private final ViewHome viewHome;
     private final ControllerCadastro controllerCadastro;
     private final ControllerLogin controllerLogin;
+    private final ControllerProduct controllerProduct;
 
-    public ControllerHome(ViewHome viewHome, ControllerCadastro controllerCadastro, ControllerLogin controllerLogin) {
+    public ControllerHome(ViewHome viewHome, ControllerCadastro controllerCadastro,
+                          ControllerLogin controllerLogin, ControllerProduct controllerProduct) {
         this.viewHome = viewHome;
         this.controllerCadastro = controllerCadastro;
         this.controllerLogin = controllerLogin;
+        this.controllerProduct = controllerProduct;
     }
 
     /**
@@ -62,8 +65,8 @@ public class ControllerHome {
     public void onLoginSuccess(ViewLogin viewLogin) {
         FlowHandler.log("DASHBOARD_OPENED");
         viewLogin.dispose();
-        ViewDashboard dashboard = new ViewDashboard();
-        dashboard.setLocationRelativeTo(viewLogin);
-        dashboard.setVisible(true);
+        ViewProducts viewProducts = new ViewProducts(controllerProduct);
+        viewProducts.setLocationRelativeTo(viewLogin);
+        viewProducts.setVisible(true);
     }
 }
